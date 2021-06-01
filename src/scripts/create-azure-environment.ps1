@@ -43,21 +43,24 @@ $resourceGroup = "janv-containers"
 # Creating the Resource Group
 az group create -n $resourceGroup -l westeurope
 
-$microsoftBuildAgentContainerName = "build-container"
+$microsoftBuildAgentContainerName = "ms-build-container"
+$buildAgentContainerName = "build-container"
 $azureDevOpsPool = "Default"
 $azureDevOpsAccountName = "janv"
 $azureDevOpsToken = ""
-Initialize-MicrosoftBuildAgent -resourceGroup $resourceGroup `
-                                -buildagentContainerName $microsoftBuildAgentContainerName `
-                                -azureDevOpsAccountName $azureDevOpsAccountName `
-                                -azureDevOpsToken $azureDevOpsToken `
-                                -azureDevOpsPool $azureDevOpsPool
+# Initialize-MicrosoftBuildAgent -resourceGroup $resourceGroup `
+#                                 -buildagentContainerName $microsoftBuildAgentContainerName `
+#                                 -azureDevOpsAccountName $azureDevOpsAccountName `
+#                                 -azureDevOpsToken $azureDevOpsToken `
+#                                 -azureDevOpsPool $azureDevOpsPool
 # Stop the build agent
-az container stop -g $resourceGroup -n $microsoftBuildAgentContainerName
+# az container stop -g $resourceGroup -n $microsoftBuildAgentContainerName
 # Start the build agent
-az container start -g $resourceGroup -n $microsoftBuildAgentContainerName
+# az container start -g $resourceGroup -n $microsoftBuildAgentContainerName
 
 $acrName = "janvregistry"
+$registryUsername = "janvregistry"
+$registryPassword = ""
 $vnetName = "janv-vnet"
 $agentSubnet = "agent-subnet"
 $agentSubnetPrefix = "10.0.2.0/27"
@@ -70,8 +73,22 @@ az network vnet subnet create -g $resourceGroup `
     --address-prefixes $agentSubnetPrefix `
     --delegations "Microsoft.ContainerInstance.containerGroups"
 
-Initialize-MicrosoftBuildAgent -resourceGroup $resourceGroup `
-    -buildagentContainerName "$($microsoftBuildAgentContainerName)vnet" `
-    -azureDevOpsAccountName $azureDevOpsAccountName `
-    -azureDevOpsToken $azureDevOpsToken `
-    -azureDevOpsPool $azureDevOpsPool
+# Initialize-MicrosoftBuildAgent -resourceGroup $resourceGroup `
+#     -buildagentContainerName "$($microsoftBuildAgentContainerName)vnet" `
+#     -azureDevOpsAccountName $azureDevOpsAccountName `
+#     -azureDevOpsToken $azureDevOpsToken `
+#     -azureDevOpsPool $azureDevOpsPool
+az container create -g $resourceGroup -n $buildagentContainerName `
+    --image janvregistry.azurecr.io/dockeragent:latest `
+    --cpu 2 `
+    --memory 4 `
+    --vnet $vnetName `
+    --subnet $agentSubnet `
+    --registry-username $registryUsername `
+    --registry-password $registryPassword `
+    --environment-variables AZP_URL="https://dev.azure.com/$($azureDevOpsAccountName)" AZP_TOKEN=$azureDevOpsToken AZP_AGENT_NAME=$buildagentContainerName AZP_POOL=$azureDevOpsPool
+
+az container stop -g $resourceGroup -n $buildagentContainerName
+Get-Date -Format o
+az container start -g $resourceGroup -n $buildagentContainerName
+Get-Date -Format o
