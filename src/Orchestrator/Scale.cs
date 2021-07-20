@@ -32,12 +32,12 @@ namespace Orchestrator
         {
             var numberOfPendingProcesses = await GetNumberOfPendingProcesses();
 
-            if (numberOfPendingProcesses > 0)
+            if (++numberOfPendingProcesses > 0)
             {
                 var runningBuildAgents = await this.agentController.GetNumberOfRunningBuildAgents();
                 if (runningBuildAgents <= MaxNumberOfBuildAgents)
                 {
-                    await this.agentController.AddNewAgent();
+                    await this.agentController.StartAgents();
                 }
 
             }
