@@ -1,0 +1,213 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "azureDevOpsUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "The full URL of the Azure DevOps environment, like `https://dev.azure.com/[azureDevOpsAccountName]`."
+            }
+        },
+        "azureDevOpsToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The PAT to access the Azure DevOps environment."
+            }
+        },
+        "imageRegistryServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "The container registry server name."
+            }
+        },
+        "imageRegistryUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "The username to log in to the container registry."
+            }
+        },
+        "imageRegistryPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The password to log in to the container registry."
+            }
+        }
+    },
+    "variables": {
+        "buildAgentContainerImage": "janvregistry.azurecr.io/dockeragent:latest",
+        "containerGroupName": "build-container"
+    },
+    "resources": [
+        {
+            "name": "[variables('containerGroupName')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2019-12-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "containers": [
+                    {
+                        "name": "agent-1",
+                        "properties": {
+                            "image": "[variables('buildAgentContainerImage')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "AZP_URL",
+                                    "secureValue": "[parameters('azureDevOpsUrl')]"
+                                },
+                                {
+                                    "name": "AZP_TOKEN",
+                                    "secureValue": "[parameters('azureDevOpsToken')]"
+                                },
+                                {
+                                    "name": "AZP_AGENT_NAME",
+                                    "secureValue": "agent-1"
+                                },
+                                {
+                                    "name": "AZP_POOL",
+                                    "secureValue": "Default"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "agent-2",
+                        "properties": {
+                            "image": "[variables('buildAgentContainerImage')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "AZP_URL",
+                                    "secureValue": "[parameters('azureDevOpsUrl')]"
+                                },
+                                {
+                                    "name": "AZP_TOKEN",
+                                    "secureValue": "[parameters('azureDevOpsToken')]"
+                                },
+                                {
+                                    "name": "AZP_AGENT_NAME",
+                                    "secureValue": "agent-1"
+                                },
+                                {
+                                    "name": "AZP_POOL",
+                                    "secureValue": "Default"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "agent-3",
+                        "properties": {
+                            "image": "[variables('buildAgentContainerImage')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "AZP_URL",
+                                    "secureValue": "[parameters('azureDevOpsUrl')]"
+                                },
+                                {
+                                    "name": "AZP_TOKEN",
+                                    "secureValue": "[parameters('azureDevOpsToken')]"
+                                },
+                                {
+                                    "name": "AZP_AGENT_NAME",
+                                    "secureValue": "agent-1"
+                                },
+                                {
+                                    "name": "AZP_POOL",
+                                    "secureValue": "Default"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "agent-4",
+                        "properties": {
+                            "image": "[variables('buildAgentContainerImage')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            }
+                        },
+                            "environmentVariables": [
+                                {
+                                    "name": "AZP_URL",
+                                    "secureValue": "[parameters('azureDevOpsUrl')]"
+                                },
+                                {
+                                    "name": "AZP_TOKEN",
+                                    "secureValue": "[parameters('azureDevOpsToken')]"
+                                },
+                                {
+                                    "name": "AZP_AGENT_NAME",
+                                    "secureValue": "agent-1"
+                                },
+                                {
+                                    "name": "AZP_POOL",
+                                    "secureValue": "Default"
+                                }
+                            ]
+                    },
+                    {
+                        "name": "agent-5",
+                        "properties": {
+                            "image": "[variables('buildAgentContainerImage')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 1.5
+                                }
+                            }
+                        },
+                            "environmentVariables": [
+                                {
+                                    "name": "AZP_URL",
+                                    "secureValue": "[parameters('azureDevOpsUrl')]"
+                                },
+                                {
+                                    "name": "AZP_TOKEN",
+                                    "secureValue": "[parameters('azureDevOpsToken')]"
+                                },
+                                {
+                                    "name": "AZP_AGENT_NAME",
+                                    "secureValue": "agent-1"
+                                },
+                                {
+                                    "name": "AZP_POOL",
+                                    "secureValue": "Default"
+                                }
+                            ]
+                    }
+                ],
+                "osType": "Linux",
+                "restartPolicy": "Always",
+                "imageRegistryCredentials": [
+                    {
+                        "server": "[parameters('imageRegistryServerName')]",
+                        "username": "[parameters('imageRegistryUsername')]",
+                        "password": "[parameters('imageRegistryPassword')]"
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+    }
+}

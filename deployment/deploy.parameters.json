@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "azureDevOpsUrl": {
+            "value": "https://dev.azure.com/janv"
+        },
+        "azureDevOpsToken": {
+            "value": "" // TODO: Fill in parameter value
+        },
+        "imageRegistryServerName": {
+            "value": "janvregistry.azurecr.io"
+        },
+        "imageRegistryUsername": {
+            "value": "janvregistry"
+        },
+        "imageRegistryPassword": {
+            "value": "" // TODO: Fill in parameter value
+        }
+
+    }
+}
