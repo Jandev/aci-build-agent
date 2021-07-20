@@ -15,6 +15,8 @@ namespace Orchestrator
         /// </summary>
         private int MaxNumberOfBuildAgents = 5;
 
+        private static int _idleCounter;
+
         public Scale(
             IPipelineRunner pipelineRunner,
             IAgentController agentController,
@@ -34,12 +36,28 @@ namespace Orchestrator
 
             if (++numberOfPendingProcesses > 0)
             {
+                _idleCounter = 0;
                 var runningBuildAgents = await this.agentController.GetNumberOfRunningBuildAgents();
                 if (runningBuildAgents <= MaxNumberOfBuildAgents)
                 {
                     await this.agentController.StartAgents();
                 }
+            }
+            else
+            {
+                await StopWhenIdling();
+            }
+        }
 
+        /// <summary>
+        /// If nothing happens for a long period of time, stops the running agents.
+        /// </summary>
+        private async Task StopWhenIdling()
+        {
+            _idleCounter++;
+            if (_idleCounter >= 10)
+            {
+                await this.agentController.StopAgents();
             }
         }
 

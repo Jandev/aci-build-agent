@@ -16,6 +16,7 @@ namespace Orchestrator
     {
         Task<int> GetNumberOfRunningBuildAgents();
         Task StartAgents();
+        Task StopAgents();
     }
 
     internal class AzureContainerInstanceController : IAgentController
@@ -60,7 +61,18 @@ namespace Orchestrator
             }
         }
 
-        
+        public async Task StopAgents()
+        {
+            var azureContext = await GetAzureContext();
+
+            foreach (var containerGroup in await azureContext.ContainerGroups.ListByResourceGroupAsync("janv-containers"))
+            {
+                this.logger.LogInformation("Stopping the container group {containerGroup}", containerGroup.Name);
+                await containerGroup.StopAsync();
+            }
+        }
+
+
         private async Task<IAzure> GetAzureContext()
         {
             const string tenantId = "4b1fa0f3-862b-4951-a3a8-df1c72935c79";
