@@ -51,7 +51,7 @@
                             "image": "[variables('buildAgentContainerImage')]",
                             "resources": {
                                 "requests": {
-                                    "cpu": 1,
+                                    "cpu": 0.5,
                                     "memoryInGb": 1.5
                                 }
                             },
@@ -81,7 +81,7 @@
                             "image": "[variables('buildAgentContainerImage')]",
                             "resources": {
                                 "requests": {
-                                    "cpu": 1,
+                                    "cpu": 0.5,
                                     "memoryInGb": 1.5
                                 }
                             },
@@ -96,7 +96,7 @@
                                 },
                                 {
                                     "name": "AZP_AGENT_NAME",
-                                    "secureValue": "agent-1"
+                                    "secureValue": "agent-2"
                                 },
                                 {
                                     "name": "AZP_POOL",
@@ -111,7 +111,7 @@
                             "image": "[variables('buildAgentContainerImage')]",
                             "resources": {
                                 "requests": {
-                                    "cpu": 1,
+                                    "cpu": 0.5,
                                     "memoryInGb": 1.5
                                 }
                             },
@@ -126,7 +126,7 @@
                                 },
                                 {
                                     "name": "AZP_AGENT_NAME",
-                                    "secureValue": "agent-1"
+                                    "secureValue": "agent-2"
                                 },
                                 {
                                     "name": "AZP_POOL",
@@ -134,67 +134,67 @@
                                 }
                             ]
                         }
-                    },
-                    {
-                        "name": "agent-4",
-                        "properties": {
-                            "image": "[variables('buildAgentContainerImage')]",
-                            "resources": {
-                                "requests": {
-                                    "cpu": 1,
-                                    "memoryInGb": 1.5
-                                }
-                            }
-                        },
-                            "environmentVariables": [
-                                {
-                                    "name": "AZP_URL",
-                                    "secureValue": "[parameters('azureDevOpsUrl')]"
-                                },
-                                {
-                                    "name": "AZP_TOKEN",
-                                    "secureValue": "[parameters('azureDevOpsToken')]"
-                                },
-                                {
-                                    "name": "AZP_AGENT_NAME",
-                                    "secureValue": "agent-1"
-                                },
-                                {
-                                    "name": "AZP_POOL",
-                                    "secureValue": "Default"
-                                }
-                            ]
-                    },
-                    {
-                        "name": "agent-5",
-                        "properties": {
-                            "image": "[variables('buildAgentContainerImage')]",
-                            "resources": {
-                                "requests": {
-                                    "cpu": 1,
-                                    "memoryInGb": 1.5
-                                }
-                            }
-                        },
-                            "environmentVariables": [
-                                {
-                                    "name": "AZP_URL",
-                                    "secureValue": "[parameters('azureDevOpsUrl')]"
-                                },
-                                {
-                                    "name": "AZP_TOKEN",
-                                    "secureValue": "[parameters('azureDevOpsToken')]"
-                                },
-                                {
-                                    "name": "AZP_AGENT_NAME",
-                                    "secureValue": "agent-1"
-                                },
-                                {
-                                    "name": "AZP_POOL",
-                                    "secureValue": "Default"
-                                }
-                            ]
                     }
+                    // {
+                    //     "name": "agent-4",
+                    //     "properties": {
+                    //         "image": "[variables('buildAgentContainerImage')]",
+                    //         "resources": {
+                    //             "requests": {
+                    //                 "cpu": 0.5,
+                    //                 "memoryInGb": 1.5
+                    //             }
+                    //         },
+                    //         "environmentVariables": [
+                    //             {
+                    //                 "name": "AZP_URL",
+                    //                 "secureValue": "[parameters('azureDevOpsUrl')]"
+                    //             },
+                    //             {
+                    //                 "name": "AZP_TOKEN",
+                    //                 "secureValue": "[parameters('azureDevOpsToken')]"
+                    //             },
+                    //             {
+                    //                 "name": "AZP_AGENT_NAME",
+                    //                 "secureValue": "agent-4"
+                    //             },
+                    //             {
+                    //                 "name": "AZP_POOL",
+                    //                 "secureValue": "Default"
+                    //             }
+                    //         ]
+                    //     }                            
+                    // },
+                    // {
+                    //     "name": "agent-5",
+                    //     "properties": {
+                    //         "image": "[variables('buildAgentContainerImage')]",
+                    //         "resources": {
+                    //             "requests": {
+                    //                 "cpu": 0.5,
+                    //                 "memoryInGb": 1.5
+                    //             }
+                    //         },
+                    //         "environmentVariables": [
+                    //             {
+                    //                 "name": "AZP_URL",
+                    //                 "secureValue": "[parameters('azureDevOpsUrl')]"
+                    //             },
+                    //             {
+                    //                 "name": "AZP_TOKEN",
+                    //                 "secureValue": "[parameters('azureDevOpsToken')]"
+                    //             },
+                    //             {
+                    //                 "name": "AZP_AGENT_NAME",
+                    //                 "secureValue": "agent-5"
+                    //             },
+                    //             {
+                    //                 "name": "AZP_POOL",
+                    //                 "secureValue": "Default"
+                    //             }
+                    //         ]
+                    //     }
+                    // }
                 ],
                 "osType": "Linux",
                 "restartPolicy": "Always",
