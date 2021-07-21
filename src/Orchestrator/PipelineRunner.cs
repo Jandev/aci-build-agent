@@ -36,10 +36,14 @@ namespace Orchestrator
     internal class AzureDevOpsPipelineRunner : IPipelineRunner
     {
         private readonly HttpClient httpClient;
+        private readonly Settings settings;
 
-        public AzureDevOpsPipelineRunner(HttpClient httpClient)
+        public AzureDevOpsPipelineRunner(
+            HttpClient httpClient,
+            Settings settings)
         {
             this.httpClient = httpClient;
+            this.settings = settings;
         }
 
         /// <summary>
@@ -49,7 +53,7 @@ namespace Orchestrator
         public async Task<int> PendingBuilds()
         {
             var request = CreateAuthenticatedRequest(
-                "https://dev.azure.com/janv/Livecoding/_apis/build/builds?statusFilter=notStarted&api-version=6.0");
+                $"{settings.AzureDevOpsProjectUrl}/_apis/build/builds?statusFilter=notStarted&api-version=6.0");
 
             var response = await this.httpClient.SendAsync(request);
 
@@ -77,7 +81,7 @@ namespace Orchestrator
         public async Task<int> PendingReleases()
         {
             var request = CreateAuthenticatedRequest(
-                "https://vsrm.dev.azure.com/janv/Livecoding/_apis/release/releases?api-version=6.1-preview.8&$expand=environments&environmentStatusFilter=4");
+                $"{settings.AzureDevOpsProjectUrl}/_apis/release/releases?api-version=6.1-preview.8&$expand=environments&environmentStatusFilter=4");
             var response = await this.httpClient.SendAsync(request);
 
             var content = await response.Content.ReadAsStringAsync();
@@ -90,7 +94,7 @@ namespace Orchestrator
         {
             var credentials = Convert.ToBase64String(
                 System.Text.ASCIIEncoding.ASCII.GetBytes(
-                    string.Format("{0}:{1}", "", "moalox7pp5zq4l3ecgho67ihcnrofslc2bk67odvmma7tplogo7a")));
+                    string.Format("{0}:{1}", "", settings.AzureDevOpsPAT)));
 
             var request = new HttpRequestMessage
             {

@@ -22,19 +22,23 @@ namespace Orchestrator
     internal class AzureContainerInstanceController : IAgentController
     {
         private static IAzure azure;
+        private readonly Settings settings;
         private readonly ILogger<AzureContainerInstanceController> logger;
 
-        public AzureContainerInstanceController(ILogger<AzureContainerInstanceController> logger)
+        public AzureContainerInstanceController(
+            Settings settings,
+            ILogger<AzureContainerInstanceController> logger)
         {
+            this.settings = settings;
             this.logger = logger;
         }
         public async Task<int> GetNumberOfRunningBuildAgents()
         {
-            const string imageName = "janvregistry.azurecr.io/dockeragent:latest";
+            string imageName = this.settings.AgentImageName;
             var azureContext = await GetAzureContext();
             int totalNumberOfAgents = 0;
             
-            foreach (var containerGroup in await azureContext.ContainerGroups.ListByResourceGroupAsync("janv-containers"))
+            foreach (var containerGroup in await azureContext.ContainerGroups.ListByResourceGroupAsync(settings.AgentResourceGroup))
             {
                 var allAgentContainers = containerGroup.Containers.Count(c => 
                     imageName.Equals(c.Value.Image, StringComparison.InvariantCultureIgnoreCase) &&
@@ -52,12 +56,12 @@ namespace Orchestrator
         {
             var azureContext = await GetAzureContext();
 
-            foreach (var containerGroup in await azureContext.ContainerGroups.ListByResourceGroupAsync("janv-containers"))
+            foreach (var containerGroup in await azureContext.ContainerGroups.ListByResourceGroupAsync(settings.AgentResourceGroup))
             {
                 this.logger.LogInformation("Starting the container group {containerGroup}", containerGroup.Name);
                 // For some reason there is a `Stop` and `Restart` method on an `IContainerGroup`, but not a `Start`,
                 // so I'm using the following to solve this, which invoe
-                await containerGroup.Manager.ContainerGroups.StartAsync("janv-containers", containerGroup.Name);
+                await containerGroup.Manager.ContainerGroups.StartAsync(settings.AgentResourceGroup, containerGroup.Name);
             }
         }
 
@@ -65,7 +69,7 @@ namespace Orchestrator
         {
             var azureContext = await GetAzureContext();
 
-            foreach (var containerGroup in await azureContext.ContainerGroups.ListByResourceGroupAsync("janv-containers"))
+            foreach (var containerGroup in await azureContext.ContainerGroups.ListByResourceGroupAsync(settings.AgentResourceGroup))
             {
                 this.logger.LogInformation("Stopping the container group {containerGroup}", containerGroup.Name);
                 await containerGroup.StopAsync();
@@ -75,12 +79,12 @@ namespace Orchestrator
 
         private async Task<IAzure> GetAzureContext()
         {
-            const string tenantId = "4b1fa0f3-862b-4951-a3a8-df1c72935c79";
-            const string subscriptionId = "3b3729b4-021a-48b5-a2eb-47be0c7e7f44";
+            string tenantId = settings.AzureTenantId;
+            string subscriptionId = settings.AzureSubscriptionId;
 
             if (azure != null) return azure;
 
-            string localDevelopment = Environment.GetEnvironmentVariable("LocalDevelopment", EnvironmentVariableTarget.Process);
+            string localDevelopment = settings.LocalDevelopment;
             if (!string.IsNullOrEmpty(localDevelopment) &&
                 string.Equals(localDevelopment, "true", StringComparison.InvariantCultureIgnoreCase))
             {

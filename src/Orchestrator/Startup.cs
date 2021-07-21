@@ -12,6 +12,9 @@ namespace Orchestrator
 
             builder.Services.AddTransient<IPipelineRunner, AzureDevOpsPipelineRunner>();
             builder.Services.AddTransient<IAgentController, AzureContainerInstanceController>();
+            builder.Services.AddSingleton<Settings>();
         }
     }
+
+    
 }
