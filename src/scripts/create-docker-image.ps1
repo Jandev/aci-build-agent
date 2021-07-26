@@ -4,7 +4,8 @@ $imageVersion = "v1"
 $acrName = "janvregistry"
 $acrHostname = "$($acrName).azurecr.io"
 $adminUsername = "janvregistry"
-$adminPassword = ""
+$adminPassword = "" # The password of your Container Registry
+
 # Build the Docker image from the folder `dockeragent`
 docker build -t "$($imageName):latest" -t "$($imageName):$($imageVersion)" .\dockeragent
 # Tag the image with the ACR hostname
